@@ -11,10 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class LocationController extends AbstractController
 {
-    const API_KEY='AIzaSyB2eIZAeoPlwbq21-rEDsD4iotKxpU_p-c';
     #[Route('/location', name: 'app_location')]
     public function index(Request $request): Response
     {
+        $googleMapsApiKey = $this->getParameter('google_maps_api_key');
 
         // Crear una nueva instancia de la entidad Location
         $location = new Location();
@@ -30,8 +30,7 @@ class LocationController extends AbstractController
             $direccion = $location->getAddress();
 
             // Llamar a la API de Google Maps para obtener la latitud y longitud
-            $apiKey = self::API_KEY;
-            $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($direccion) . '&key=' . $apiKey;
+            $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($direccion) . '&key=' . $googleMapsApiKey;
             $response = file_get_contents($url);
             $data = json_decode($response, true);
 
@@ -50,6 +49,7 @@ class LocationController extends AbstractController
         return $this->render('mapa/index2.html.twig', [
             'form' => $form->createView(),
             'location' => $location,
+            'google_maps_api_key' => $googleMapsApiKey
         ]);
 
     }
