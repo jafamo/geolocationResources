@@ -1,0 +1,49 @@
+{# templates/mapa/index.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa con Symfony</title>
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h1>Formulario de dirección</h1>
+
+{{ form_start(form) }}
+{{ form_row(form.address) }}
+{{ form_row(form.latitude) }}
+{{ form_row(form.longitude) }}
+<button type="submit">Enviar</button>
+{{ form_end(form) }}
+
+{% if location.latitude is not null and location.longitude is not null %}
+    <h2>Mapa</h2>
+    <div id="map"></div>
+    <script>
+        let map;
+        function initMap() {
+            const location = { lat: {{ location.latitude }}, lng: {{ location.longitude }} };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: location
+            });
+            new google.maps.Marker({
+                position: location,
+                map: map,
+                title: '{{ location.address }}'
+            });
+        }
+    </script>
+{% endif %}
+</body>
+
+{#<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2eIZAeoPlwbq21-rEDsD4iotKxpU_p-c" async defer></script>#}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2eIZAeoPlwbq21-rEDsD4iotKxpU_p-c&callback=initMap" async defer></script>
+</html>
